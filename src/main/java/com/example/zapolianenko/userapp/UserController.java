@@ -1,5 +1,6 @@
 package com.example.zapolianenko.userapp;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,13 +16,13 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/registration")
-    public ResponseEntity<User> createUser(@RequestBody RegistrationRequest registrationRequest) {
+    public ResponseEntity<User> createUser(@RequestBody @Valid RegistrationRequest registrationRequest) {
         User createdUser = userService.createUser(registrationRequest);
         return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<User> updateUser(@RequestBody UserUpdateRequest updateUser, @PathVariable Long id) {
+    public ResponseEntity<User> updateUser(@RequestBody @Valid UserUpdateRequest updateUser, @PathVariable Long id) {
         User updatedUser = userService.update(updateUser, id);
         return ResponseEntity.ok(updatedUser);
     }

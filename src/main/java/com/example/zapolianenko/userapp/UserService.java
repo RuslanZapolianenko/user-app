@@ -13,8 +13,9 @@ import java.util.NoSuchElementException;
 @Service
 public class UserService {
     @Value("${user.min.age}")
-    private int minAge ;
+    private int minAge;
     private final UserRepository userRepository;
+
     public User createUser(RegistrationRequest registrationRequest) {
 
         if (!isUserAdult(registrationRequest.getBirthDate())) {
@@ -27,13 +28,16 @@ public class UserService {
 
         User newUser = new User();
         newUser.setName(registrationRequest.getName());
+        newUser.setLastname(registrationRequest.getLastname());
         newUser.setEmail(registrationRequest.getEmail());
         newUser.setBirthDate(registrationRequest.getBirthDate());
-
+        newUser.setAddress(registrationRequest.getAddress());
+        newUser.setPhone(registrationRequest.getPhone());
         return userRepository.save(newUser);
 
     }
-    public User update(UserUpdateRequest updateUser,Long id){
+
+    public User update(UserUpdateRequest updateUser, Long id) {
         User existingUser = userRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Пользователь с таким идентификатором не найден"));
 
@@ -46,18 +50,19 @@ public class UserService {
 
         return userRepository.save(existingUser);
     }
-    public void  delete(Long id){
+
+    public void delete(Long id) {
         User existingUser = userRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Пользователь с таким идентификатором не найден"));
         userRepository.deleteById(id);
 
-
     }
-    public List<User>rangeUserByAge(LocalDate from,LocalDate to){
+
+    public List<User> rangeUserByAge(LocalDate from, LocalDate to) {
         return userRepository.findAllByBirthDateBetween(from, to);
-
     }
-    public boolean isUserAdult(LocalDate birthDate){
+
+    public boolean isUserAdult(LocalDate birthDate) {
         LocalDate currentDate = LocalDate.now();
         Period period = Period.between(birthDate, currentDate);
         return period.getYears() >= minAge;
